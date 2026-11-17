@@ -283,15 +283,17 @@ function paintSide(right){
   headlight(c,X(6.98),X(8),Y(1.12),Y(0.82),0);
   rect(6.9,0.2,8,0.36,'#0b0b0d');
   // giant VL outline
-  c.save();c.textAlign='center';c.textBaseline='alphabetic';c.lineJoin='miter';
-  const fs=4.35*P;c.font=`700 ${fs}px ${F_SERIF}`;
+  // giant VL monogram: italic serif, joined letters, double outline (as in the brand logo)
   const mid=X(-0.25),base=Y(0.52);
-  for(const [ch,off] of [['V',-1.42*P],['L',1.36*P]]){c.save();c.translate(mid+off,base);c.scale(0.74,1);
-    c.shadowColor='rgba(170,90,255,.8)';c.shadowBlur=26;c.strokeStyle=PURPLE;c.lineWidth=22;c.strokeText(ch,0,0);
-    c.shadowBlur=0;c.strokeStyle='#b47be6';c.lineWidth=5;c.strokeText(ch,0,0);c.restore()}
-  c.restore();
+  {const o=document.createElement('canvas');o.width=7*P;o.height=4.4*P;const k=o.getContext('2d');
+   k.textAlign='center';k.textBaseline='alphabetic';k.lineJoin='miter';k.miterLimit=3;k.font=`italic 700 ${4.2*P}px ${F_SERIF}`;
+   const put=(fn)=>{for(const [ch,off] of [['V',-0.98*P],['L',0.92*P]]){k.save();k.translate(3.5*P+off,3.75*P);k.scale(0.78,1);fn(ch);k.restore()}};
+   k.strokeStyle=PURPLE;k.lineWidth=40;put(ch=>k.strokeText(ch,0,0));
+   k.globalCompositeOperation='destination-out';k.lineWidth=20;put(ch=>k.strokeText(ch,0,0));
+   k.globalCompositeOperation='source-over';
+   c.save();c.shadowColor='rgba(170,90,255,.85)';c.shadowBlur=22;c.drawImage(o,mid-3.5*P,base-3.75*P);c.shadowBlur=0;c.restore()}
   // gold 60 emblem between the letters + Galaxy Bus logo
-  logo60(c,mid-0.05*P,Y(2.42),0.62*P,true);
+  logo60(c,mid+(right?1:1)*1.75*P,Y(2.25),0.5*P,true);
   logoGalaxy(c,X(3.25),Y(3.02),0.3*P,false);
   // diagonal Vida Leve over the galaxy + small 60 emblem top rear
   c.save();c.translate(X(right?-5.75:-5.35),Y(1.95));c.rotate(-0.98);c.textAlign='center';c.textBaseline='middle';
